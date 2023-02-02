@@ -16,15 +16,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from detector import Detector
 import time
 
+
 def det_yolov5v6(info1):
-    if info1[-3:] in ['jpg','png','jpeg','tif','bmp','JPG']:
+    if info1[-3:] in ['jpg', 'png', 'jpeg', 'tif', 'bmp', 'JPG']:
         image = cv2.imread(info1)  # 读取识别对象
         try:
             bboxes = detector.detect(image)
             for i in bboxes:
                 box = i[1]
                 p1, p2 = (int(box[0]), int(box[1])), (int(box[2]), int(box[3]))
-                color = [0,0,255]
+                color = [0, 0, 255]
                 ui.printf(str(time.strftime('%Y.%m.%d %H:%M:%S ', time.localtime(time.time()))) + '检测到' + str(i[0]))
                 cv2.rectangle(image, p1, p2, color, thickness=3, lineType=cv2.LINE_AA)
                 score = float(i[2])
@@ -35,7 +36,7 @@ def det_yolov5v6(info1):
         ui.showimg(image)
         QApplication.processEvents()
 
-    if info1[-3:] in ['mp4','avi']:
+    if info1[-3:] in ['mp4', 'avi']:
         capture = cv2.VideoCapture(info1)
         fps = capture.get(cv2.CAP_PROP_FPS)  # 视频平均帧率
         while True:
@@ -48,7 +49,8 @@ def det_yolov5v6(info1):
                     box = i[1]
                     p1, p2 = (int(box[0]), int(box[1])), (int(box[2]), int(box[3]))
                     color = [0, 0, 255]
-                    ui.printf(str(time.strftime('%Y.%m.%d %H:%M:%S ', time.localtime(time.time()))) + '检测到' + str(i[0]))
+                    ui.printf(
+                        str(time.strftime('%Y.%m.%d %H:%M:%S ', time.localtime(time.time()))) + '检测到' + str(i[0]))
                     cv2.rectangle(image, p1, p2, color, thickness=3, lineType=cv2.LINE_AA)
                     score = float(i[2])
                     cv2.putText(image, str(i[0]) + ' ' + str(score)[:5], (int(box[0]), int(box[1]) - 10),
@@ -59,10 +61,11 @@ def det_yolov5v6(info1):
             QApplication.processEvents()
             time.sleep(1 / fps)  # 按原帧率播放
 
+
 class Thread_1(QThread):  # 线程1
-    def __init__(self,info1):
+    def __init__(self, info1):
         super().__init__()
-        self.info1=info1
+        self.info1 = info1
         self.run2(self.info1)
 
     def run2(self, info1):
@@ -74,7 +77,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 960)
-        MainWindow.setStyleSheet("background-image: url(\"./template/carui.png\")")
+        MainWindow.setStyleSheet("background-image: url(\"./template/a.jpeg\")")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -113,8 +116,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "输电塔鸟巢检测系统"))
-        self.label.setText(_translate("MainWindow", "输电塔鸟巢检测系统"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "鸟巢检测系统"))
+        self.label.setText(_translate("MainWindow", "鸟巢检测系统"))
         self.label_2.setText(_translate("MainWindow", "请添加对象，注意路径不要存在中文"))
         self.pushButton.setText(_translate("MainWindow", "选择对象"))
         self.pushButton_2.setText(_translate("MainWindow", "开始识别"))
@@ -144,13 +147,13 @@ class Ui_MainWindow(object):
     def handleCalc3(self):
         os._exit(0)
 
-    def printf(self,text):
+    def printf(self, text):
         self.textBrowser.append(text)
         self.cursor = self.textBrowser.textCursor()
         self.textBrowser.moveCursor(self.cursor.End)
         QtWidgets.QApplication.processEvents()
 
-    def showimg(self,img):
+    def showimg(self, img):
         global vid
         img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -176,7 +179,6 @@ class Ui_MainWindow(object):
         self.thread_1 = Thread_1(filepath)  # 创建线程
         self.thread_1.wait()
         self.thread_1.start()  # 开始线程
-
 
 
 if __name__ == "__main__":
